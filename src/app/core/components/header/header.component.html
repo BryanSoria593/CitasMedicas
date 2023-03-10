@@ -1,0 +1,32 @@
+<div class="h-16 lg:flex w-full hidden pr-10 border-b shadow-sm text-gray-700">
+    <div class="flex items-center font-bold text-lg ml-4 ">
+        {{title}}
+    </div> 
+    <div class="flex items-center space-x-4 ml-auto">
+        <div [matMenuTriggerFor]="menu">
+            <button class="flex items-center group" aria-haspopup="true" aria-expanded="false">
+                <i class="fa-solid fa-user"></i>
+                <span class="ml-2 truncate text-sm font-medium">{{user$.nombres +' ' + user$.apellidos}}</span>
+                <i class="ml-2 fa-solid fa-caret-down"></i>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item>
+                    <span class="mr-2">
+                        <i class="fa-sharp fa-solid fa-gear"></i>
+                    </span>
+                    <span>Editar perfil</span>
+                </button>
+                <button mat-menu-item (click)="logout()">
+                    <span class="mr-2">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </span>
+                    <span>Cerrar sesión</span>
+                </button>
+            </mat-menu>
+        </div>
+        <hr class="w-px h-6 bg-slate-200">
+        <button class="text-xl text-red-600 font-bold" (click)="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+    </div>
+</div>

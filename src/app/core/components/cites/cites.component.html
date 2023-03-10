@@ -1,0 +1,131 @@
+<div *ngIf="(data$ | async ).length === 0"
+    class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 m-3 px-4 py-3 shadow-md" role="alert">
+    <div class="flex">
+        <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20">
+                <path
+                    d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+            </svg></div>
+        <div>
+            <p class="font-bold ">No tiene citas pendientes</p>
+
+
+            <button 
+            class="bg-teal-400 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full"
+            routerLink="/cites/new"
+            >
+                Agendar cita
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="(data$ | async ).length != 0" class="table-responsive">
+    <mat-paginator class="bg-gray-100" [length]="(data$ | async ).length" [pageSize]="pageSize" (page)="cambiarpagina($event)"
+        [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
+    </mat-paginator>
+    <table class="bg-gray-100 w-full">
+        <thead>
+            <tr
+                class="text-md font-semibold tracking-wide text-left text-gray-700 text-xs  uppercase border-b border-gray-600">
+                <th (click)="ordenarPor('id_cita')" class="px-4 py-3">
+                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
+                    ID
+                </th>
+                <th (click)="ordenarPor('fecha')" class="px-4 py-3">
+                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
+                    Fecha
+                </th>
+                <th (click)="ordenarPor('estado')" class="px-4 py-3">
+                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
+                    Estado
+                </th>
+                <th (click)="ordenarPor('id_disponibilidad')" class="px-4 py-3">
+                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
+                    Turno
+                </th>
+                <th (click)="ordenarPor('doctor')" class="px-4 py-3">
+                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
+                    Doctor
+                </th>
+                <th (click)="ordenarPor('paciente')" class="px-4 py-3">
+                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
+                    Paciente
+                </th>
+                <th (click)="ordenarPor('hora')" class="px-4 py-3">
+                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
+                    Hora
+                </th>
+                <th (click)="ordenarPor('area')" class="px-4 py-3">
+                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
+                    Área
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of data$ | async | slice:desde:hasta let i=index">
+
+                <td class="px-4 py-3 border">
+                    <div class="flex items-center text-sm">
+                        <div>
+                            <p class="text-xs text-gray-900">{{item.id_cita}}</p>
+                        </div>
+                    </div>
+                </td>
+
+                <td class="px-4 py-3 border">
+                    <div class="flex items-center text-sm">
+                        <div>
+                            <p class="text-xs text-gray-900">{{item.fecha}}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-4 py-3 text-xs text-gray-900 border">
+                    <span class="px-2 py-1 font-semibold leading-tight rounded-sm" [ngClass]="{
+                                        'bg-green-100 text-green-800': item.estado === 'Asistida',
+                                        'bg-red-100 text-red-800': item.estado === 'Cancelada',
+                                        'bg-yellow-100 text-yellow-800': item.estado === 'Pendiente'
+                                    }">
+                        {{item.estado}}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-xs border">
+                    <span class="px-2 py-1 text-gray-900 ">
+                        {{item.id_disponibilidad}}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-xs text-gray-900 border">{{item.doctor}}</td>
+                <td class="px-4 py-3 text-xs text-gray-900 border">{{item.paciente}}</td>
+                <td class="px-4 py-3 text-xs text-gray-900 border">{{item.hora}}</td>
+                <td class="px-4 py-3 text-xs text-gray-900 border">{{item.area}}</td>
+
+                <td class="px-4 py-3 text-xs text-gray-900 border">
+                    <div *ngIf="item.estado == 'Pendiente'" class="flex justify-center">
+
+                        <button type="button"
+                            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-normal rounded-lg text-xs px-3 py-2 mr-2 mb-2">Eliminar</button>
+                        <button type="button"
+                            class="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 font-normal rounded-lg text-xs px-3 py-2 mr-2 mb-2">Editar</button>
+                    </div>
+
+                    <div *ngIf="item.estado == 'Asistida'" class="flex justify-center">
+                        <button type="button"
+                            class="focus:outline-none justify-items-center text-white bg-green-700 hover:bg-green-800 font-normal rounded-lg text-xs px-3 py-2 mr-2 mb-2">Ver
+                            historial</button>
+                    </div>
+
+                    <div *ngIf="item.estado == 'Cancelada'" class="bg-orange-100 p-2 font-bold text-xs">
+                        <span>No puede editar una</span>
+                        <br>
+                        <span>cita {{item.estado}} </span>
+                    </div>
+
+
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

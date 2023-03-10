@@ -1,0 +1,180 @@
+<div class="min-w-screen min-h-screen bg-gray-900 flex items-center justify-center px-5 py-5">
+  <div class="bg-gray-100 text-gray-500 rounded-3xl shadow-xl w-full overflow-hidden" style="max-width:1000px">
+    <div class="md:flex w-full">
+      <div class="w-full md:w-1/2 py-2 px-5 md:px-10">
+        <div class="text-center ">
+          <h1 class="font-bold text-3xl text-gray-900">Registro de usuario</h1>
+          <p>Para registrarse, complete el siguiente formulario.</p>
+        </div>
+        <form (submit)="sendRegister()" [formGroup]="formRegister">
+          <div class="flex -mx-3">
+            <div class="w-1/2 px-3 mb-2">
+              <label for="names" class="text-xs font-semibold px-1">Nombres</label>
+              <div class="flex">
+                <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <input formControlName="names" type="text"
+                  class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="Bryan Andrés">
+              </div>
+              <mat-error class="error"
+                *ngIf="this.formRegister.get('names')?.touched && this.formRegister.get('names')?.hasError('required')">
+                Los nombres son requeridos</mat-error>
+            </div>
+
+            <div class="w-1/2 px-3 mb-2">
+              <label for="lastName" class="text-xs font-semibold px-1">Apellidos</label>
+              <div class="flex">
+                <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <input formControlName="lastName" type="text"
+                  class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="Soria Méndez">
+              </div>
+              <mat-error class="error"
+                *ngIf="this.formRegister.get('lastName')?.touched && this.formRegister.get('lastName')?.hasError('required')">
+                Los apellidos son requeridos</mat-error>
+            </div>
+          </div>
+          <div class="flex -mx-3">
+            <div class="w-1/2 px-3 mb-2">
+              <label for="DNI" class="text-xs font-semibold px-1">DNI</label>
+              <div class="flex">
+                <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i class="fa-solid fa-id-card"></i>
+                </div>
+                <input formControlName="dni" type="text"
+                  class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="1928361545">
+              </div>
+              <mat-error class="error"
+                *ngIf="this.formRegister.get('dni')?.touched && this.formRegister.get('dni')?.hasError('required')">
+                El DNI es requerido</mat-error>
+            </div>
+            <div class="w-1/2 px-3 mb-2">
+              <label for="date" class="text-xs font-semibold px-1">Fecha de nacimiento</label>
+              <div class="flex">
+                <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <input formControlName="date" type="date"
+                  class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="Smith">
+              </div>
+              <mat-error class="error"
+                *ngIf="this.formRegister.get('date')?.touched && this.formRegister.get('date')?.hasError('required')">
+                La fecha de nacimiento es requerida</mat-error>
+            </div>
+          </div>
+          <div class="flex -mx-3">
+            <div class="w-1/2 px-3 mb-2">
+              <label for="sex" class="text-xs font-semibold px-1">Sexo</label>
+              <div class="flex">
+                <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i class="fa-solid fa-venus-mars"></i>
+                </div>
+
+                <select formControlName="sex" id="countries"
+                  class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500">
+                  <option value="Masculino">Masculino</option>
+                  <option value="Femenino">Femenino</option>
+                </select>
+
+              </div>
+              <mat-error class="error"
+                *ngIf="this.formRegister.get('sex')?.touched && this.formRegister.get('sex')?.hasError('required')">
+                El sexo es requerido</mat-error>
+            </div>
+            <div class="w-1/2 px-3 mb-2">
+              <label for="city" class="text-xs font-semibold px-1">Ciudad</label>
+              <div class="flex">
+                <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <input formControlName="city" type="text"
+                  class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="Guayaquil, Quito., etc...">
+              </div>
+              <mat-error class="error"
+                *ngIf="this.formRegister.get('city')?.touched && this.formRegister.get('city')?.hasError('required')">
+                La ciudad es requerida</mat-error>
+            </div>
+          </div>
+          
+          <div class="flex -mx-3">
+            <div class="w-full px-3 mb-3">
+              <label for="email" class="text-xs font-semibold px-1">Email</label>
+              <div class="flex">
+                <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i class="fa-solid fa-envelope"></i>
+                </div>
+                <input formControlName="email" type="email"
+                  class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="johnsmith@example.com">
+              </div>
+
+              <mat-error class="error"
+                *ngIf="this.formRegister.get('email')?.touched && this.formRegister.get('email')?.hasError('required')">
+                El email es requerido</mat-error>
+            </div>
+
+          </div>
+          <div class="flex -mx-3">
+            <div class="w-full px-3 mb-5">
+              <label for="password" class="text-xs font-semibold px-1">Contraseña</label>
+              <div class="flex">
+                <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i class="fa-solid fa-key"></i>
+                </div>
+                <input formControlName="password" type="password"
+                  class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="************" autocomplete="off">
+
+              </div>
+              <mat-error class="error"
+                *ngIf="this.formRegister.get('password')?.touched && this.formRegister.get('password')?.hasError('required')">
+                La contraseña es requerida</mat-error>
+            </div>
+            <div class="w-full px-3 mb-5">
+              <label for="passwordConfirm" class="text-xs font-semibold px-1">Confirmar contraseña</label>
+              <div class="flex">
+                <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i class="fa-solid fa-key"></i>
+                </div>
+                <input formControlName="passwordConfirm" type="password"
+                  class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="************" autocomplete="off">
+              </div>
+              <mat-error class="error" *ngIf="
+                formRegister.get('password')?.touched && formRegister.get('passwordConfirm')?.touched && formRegister.get('password')?.value != formRegister.get('passwordConfirm')?.value                
+                ">
+                Las contraseñas no coinciden</mat-error>
+
+            </div>
+          </div>
+          <div class="flex -mx-3">
+            <div class="w-full px-3 mb-2">
+              <button
+                [disabled]="formRegister.get('password')?.touched && formRegister.get('passwordConfirm')?.touched && formRegister.get('password')?.value != formRegister.get('passwordConfirm')?.value || formRegister.invalid"
+                type="submit"
+                [ngClass]="
+                {
+                  'bg-indigo-500 hover:bg-indigo-600 focus:bg-indigo-700 ': formRegister.valid ,
+                  'bg-gray-500 cursor-not-allowed': formRegister.invalid || formRegister.get('password')?.touched && formRegister.get('passwordConfirm')?.touched && formRegister.get('password')?.value != formRegister.get('passwordConfirm')?.value
+                }"
+                class="block w-40 max-w-xs mx-aut text-white rounded-lg px-3 py-3 font-semibold">
+                Registrarse
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="hidden md:block w-1/2 bg-indigo-500 py-10 px-10 ">
+        <img src="../../../../assets/img/auth/image-removebg-preview (27) 1@2x.png" alt="">
+
+      </div>
+    </div>
+  </div>
+</div>

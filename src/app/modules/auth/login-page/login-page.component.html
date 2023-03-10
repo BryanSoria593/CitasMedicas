@@ -1,0 +1,78 @@
+<div class="min-w-screen min-h-screen bg-gray-900 flex items-center justify-center px-5 py-5">
+    <div class="bg-gray-100 text-gray-500 rounded-3xl shadow-xl w-full overflow-hidden" style="max-width:1000px">
+        <div class="md:flex w-full">
+            <div class="hidden md:block w-1/2 bg-indigo-500 py-10 px-10">
+                <img src="../../../../assets/img/auth/banner3.png" alt="">
+            </div>
+            <div class="w-full md:w-1/2 py-10 px-5 md:px-10">
+                <div class="text-center mb-10">
+                    <h1 class="font-bold text-3xl text-gray-900">Inicio de sesión</h1>
+                    <p>Ingrese si información para iniciar sesión</p>
+                </div>
+                <div>
+                    <form (submit)="sendLogin()" [formGroup]="formLogin">
+
+                        <div class="flex -mx-3">
+                            <div class="w-full px-3 mb-5">
+                                <label for="email" class="text-xs font-semibold px-1">Correo</label>
+                                <div class="flex">
+                                    <div
+                                        class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                                        <mat-icon> email</mat-icon>
+                                    </div>
+                                    <input formControlName="email" type="email"
+                                        class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                                        placeholder="pepe@example.com">
+
+                                </div>
+                                <mat-error class="error"
+                                    *ngIf="this.formLogin.get('email')?.touched && this.formLogin.get('email')?.hasError('required')">
+                                    El correo es requerido</mat-error>
+                            </div>
+                        </div>
+                        <div class="flex -mx-3">
+                            <div class="w-full px-3 mb-8">
+                                <label for="password" class="text-xs font-semibold px-1">Contraseña</label>
+                                <div class="flex">
+                                    <div
+                                        class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                                        <mat-icon> key</mat-icon>
+
+                                    </div>
+                                    <input formControlName="password" type="password"
+                                        class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                                        placeholder="************" autocomplete="off">
+                                </div>
+                                <mat-error class="error"
+                                    *ngIf="this.formLogin.get('password')?.touched && this.formLogin.get('password')?.hasError('required')">
+                                    <span>La contraseña es requerida</span>
+                                </mat-error>
+                            </div>
+
+                        </div>
+                        <div class="register pb-5">
+                            <a class="text-blue-800" routerLink="/auth/register">
+                                ¿Olvidaste tu contraseña?
+                            </a>
+                        </div>
+                        
+                        <div class="flex -mx-3">
+                            <div class="w-full px-3 mb-5">
+                                <button [disabled]="formLogin.invalid"
+                                    [ngClass]="{'bg-indigo-500 hover:bg-indigo-600 focus:bg-indigo-700 ': formLogin.valid, 'bg-gray-500 cursor-not-allowed': formLogin.invalid}"
+                                    class="block w-40 max-w-xs mx-aut text-white rounded-lg px-3 py-3 font-semibold">
+                                    Iniciar sesión</button>
+                            </div>
+                        </div>
+                        <div class="register pb-5">
+                            ¿No tienes cuenta? Regístrate
+                            <a class="text-blue-800" routerLink="/auth/register">
+                                aquí
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
