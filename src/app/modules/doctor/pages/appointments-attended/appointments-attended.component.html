@@ -1,0 +1,9 @@
+<div class="bg-gray-100 h-full flex overflow-hidden text-sm">
+    <div class="flex-grow overflow-hidden h-full flex flex-col">
+      <app-header class="flex-none" title="Citas registradas"></app-header>
+      <div class="content overflow-y-auto w-[97%] my-3 mx-auto">
+        <mat-progress-spinner *ngIf="(loading$ | async)" mode="indeterminate" [value]="50"></mat-progress-spinner>
+        <app-cites></app-cites>
+      </div>
+    </div>
+  </div>

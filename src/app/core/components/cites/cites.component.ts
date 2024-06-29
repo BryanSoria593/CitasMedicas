@@ -1,13 +1,22 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { selectIdUser } from 'src/app/state/selectors/items.selector';
-import { selectCites, selectLoading } from 'src/app/state/selectors/cites.selector';
-import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/state/app.state';
-import { Observable, of, tap } from 'rxjs';
-import * as CitesActions from 'src/app/state/actions/cites.action';
-import { PageEvent } from '@angular/material/paginator';
-import { CitesModel } from 'src/app/core/models/cites/cites.interface';
-import { CitesService } from 'src/app/modules/cites/services/cites.service';
+import { Component, OnInit, ViewChild } from '@angular/core'
+import { selectCites } from 'src/app/state/selectors/cites.selector'
+import { Store } from '@ngrx/store'
+import { AppState } from 'src/app/state/app.state'
+import { Observable } from 'rxjs'
+
+import { MatPaginator } from '@angular/material/paginator'
+import { CitesModel } from 'src/app/core/models/cites/cites.interface'
+import { deleteCiteRequest } from 'src/app/state/actions/cites.action'
+import { GeneralService } from 'src/app/shared/services/general.service'
+import { MatDialog } from '@angular/material/dialog'
+import { EditCiteComponent } from '../mat-dialogs/edit-cite/edit-cite.component'
+import { InfoHistorialComponent } from '../mat-dialogs/info-historial/info-historial.component'
+import { selectIdRol } from 'src/app/state/selectors/user.selector'
+import { MatTableDataSource } from '@angular/material/table'
+import { MatSort } from '@angular/material/sort'
+import { PdfGenerateService } from 'src/app/modules/patient/services/pdf-generate.service'
+import { getHistorialError, getHistorialRequest } from 'src/app/state/actions/history.action'
+import { HistoryService } from 'src/app/modules/patient/services/history.service'
 
 @Component({
   selector: 'app-cites',
@@ -15,71 +24,93 @@ import { CitesService } from 'src/app/modules/cites/services/cites.service';
   styleUrls: ['./cites.component.scss']
 })
 export class CitesComponent implements OnInit {
-  // @Input() data: CitesModel[] = [];
-  data$: Observable<CitesModel[]> = new Observable();
 
-  pageSize: 5;
-  desde: number = 0;
-  hasta: number = 5;
+  displayedColumns: string[] = ['fecha', 'hora', 'turno', 'doctor', 'paciente', 'area', 'estado', 'actions']
 
-  // Sirve para almacenar la columna y la dirección de ordenamiento, así ordenar en desc y asc según la columna
-  ordenamiento = { columna: null, direccion: null };
+  dataSource: MatTableDataSource<CitesModel> = new MatTableDataSource<CitesModel>()
 
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator | null = null
+  @ViewChild(MatSort, { static: false }) sort: MatSort | null = null
+
+  cites$: Observable<CitesModel[]> = new Observable<CitesModel[]>()
+  idRolUser$: Observable<number> = new Observable<number>()
+  pageSize: number = 7
+  hasCite: boolean = false
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private generalService: GeneralService,
+    private dialog: MatDialog,
+    private pdfService: PdfGenerateService,
+    private historyService: HistoryService,
   ) { }
 
-
   ngOnInit(): void {
-    this.data$ = this.store.select(selectCites)
+    this.cites$ = this.store.select(selectCites)
+    this.idRolUser$ = this.store.select(selectIdRol)
 
+    this.cites$.subscribe(resp => {
+      this.dataSource.data = resp
+      if (this.paginator && this.dataSource) {
+        this.dataSource.paginator = this.paginator
+        this.paginator.length = this.hasCite ? resp.length : 0
+      }
+    })
   }
 
-  cambiarpagina(e: PageEvent) {
-    this.desde = e.pageIndex * e.pageSize;
-    this.hasta = this.desde + e.pageSize;
-  }
-
-
-  ordenarPor(columna: string) {
-    if (this.ordenamiento.columna === columna) {
-      this.ordenamiento.direccion = this.ordenamiento.direccion === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.ordenamiento.columna = columna;
-      this.ordenamiento.direccion = 'asc';
+  ngAfterViewInit() {
+    if (this.paginator && this.dataSource) {
+      this.dataSource.paginator = this.paginator
     }
+    if (this.sort && this.dataSource) {
+      this.dataSource.sort = this.sort
+    }
+  }
 
-    // Crea una copia del array original
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement)?.value
+    this.dataSource.filter = filterValue.trim().toLowerCase()
 
-    this.data$.subscribe((data) => {
-      const newData = data.slice(0);
-      newData.sort((a, b) => {
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage()
+    }
+  }
 
-        // Ordena los datos según la columna y la dirección de ordenamiento
+  deleteCite(idCite: number) {
+    const dialogRef = this.generalService.openDialogConfirm('¿Estás seguro de cancelar la cita?', 'No puedes deshacerte del cambio', 'fa-solid fa-question', 'text-blue-500')
+    dialogRef.subscribe(resp => resp ? this.store.dispatch(deleteCiteRequest({ id_cita: idCite })) : null)
+  }
 
-        const direccion = this.ordenamiento.direccion === 'asc' ? 1 : -1;
-        if (a[columna] < b[columna]) {
-          return -1 * direccion;
-        } else if (a[columna] > b[columna]) {
-          return 1 * direccion;
-        } else {
-          return 0;
-        }
-      });
-
-      this.data$ = of(newData); // Con el 'of' se retorne un observable con el nuevo array ordenado
-
-
+  editCite(cite: any) {
+    const dialog = this.dialog.open(EditCiteComponent, {
+      data: { cite },
+      width: '550px'
     })
 
-
-
-
-    // Asigna el nuevo array ordenado a la propiedad 'data'
   }
 
+  showHistorial(cite: any) {
+    const dialogRef = this.dialog.open(InfoHistorialComponent, {
+      data: { cite },
+      width: '800px'
+    })
+    dialogRef.afterClosed()
+  }
+
+  generateComprobantPDF(cite: CitesModel) {
+    this.pdfService.generateComprobantPdf(cite)
+  }
+
+  generateHistoryPDF(cite: CitesModel) {
+    const idCite = cite.id_cita
+    this.store.dispatch(getHistorialRequest({ idCite }))
+    this.historyService.getHistoryByCite(idCite).subscribe({
+      next: (resp) => {
+        this.pdfService.generateHistoryPdf(cite, resp.history)
+      },
+      error: (err) => {
+        this.store.dispatch(getHistorialError({ error: err.error.msg }))
+      },
+    })
+  }
 }
-
-
-

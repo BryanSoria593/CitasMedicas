@@ -1,0 +1,53 @@
+<div class="flex flex-col">
+  <span class="text-xl font-bold mb-2 text-blue-700 ">Actualizar cita</span>
+  <span class="text-lg font-bold mb-2">Datos actuales</span>
+</div>
+
+<div mat-dialog-content class="p-4" style="height: 500px; overflow-y: auto;">
+  <div class="grid grid-cols-2 text-sm mb-4">
+    <span class="font-bold">Doctor:</span>
+    <span class="mb-2">{{ data.cite.doctor }}</span>
+
+    <span class="font-bold">Especialidad:</span>
+    <span class="mb-2">{{ data.cite.area }}</span>
+
+    <span class="font-bold">Fecha:</span>
+    <span class="mb-2">{{ data.cite.fecha }}</span>
+
+    <span class="font-bold">Hora:</span>
+    <span class="mb-2">{{ data.cite.hora_inicio}} - {{ data.cite.hora_final }}</span>
+  </div>
+
+  <div class="mt-4">
+    <mat-label class="font-semibold mb-2 block">Selecciona una fecha nueva:</mat-label>
+    <div class="flex">
+      <input [matDatepickerFilter]="filterDays" [(ngModel)]="newCite.date" name="date"
+        (ngModelChange)="onDateChange($event)" matInput [min]="minDate" [matDatepicker]="picker" readonly
+        ngDefaultControl
+        class="w-full bg-gray-100 border border-gray-400 py-2 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    </div>
+    <mat-datepicker #picker></mat-datepicker>
+  </div>
+
+  <div *ngIf="newCite.date.length > 0" class="mt-4">
+    <mat-label class="font-semibold mb-2 block">Selecciona un turno:</mat-label>
+    <mat-radio-group aria-label="Selecciona una especialidad" class="grid grid-cols-3 sm:grid-cols-4 gap-2 ">
+      <mat-radio-button *ngFor="let turn of turns$ | async" [value]="turn.id_disponibilidad" [(ngModel)]="newCite.idTurn"
+        ngDefaultControl>
+        <div class="rounded-lg shadow-md flex flex-col justify-center items-center w-auto p-5 bg-white">
+          <i class="fa-regular fa-clock text-sm text-gray-400 mb-2 "></i>
+          <p class="text-xs flex flex-col justify-center items-center space-x-1">
+            <span class="font-semibold">{{turn.hora_inicio}}</span>
+            <span class="text-gray-600"> - </span>
+            <span class="font-semibold">{{turn.hora_final}}</span>
+          </p>
+        </div>
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div class="flex justify-center gap-3" mat-dialog-actions>
+    <button mat-raised-button (click)="updateCite()" color="primary" [disabled]="(newCite.date === '') || (newCite.idTurn === null)">Actualizar</button>
+    <button mat-raised-button mat-dialog-close class="mr-4" color="warn">Cancelar</button>
+  </div>
+</div>

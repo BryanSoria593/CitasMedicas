@@ -1,131 +1,136 @@
-<div *ngIf="(data$ | async ).length === 0"
-    class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 m-3 px-4 py-3 shadow-md" role="alert">
-    <div class="flex">
-        <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20">
-                <path
-                    d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-            </svg></div>
-        <div>
-            <p class="font-bold ">No tiene citas pendientes</p>
-
-
-            <button 
-            class="bg-teal-400 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full"
-            routerLink="/cites/new"
-            >
-                Agendar cita
-            </button>
+<div class="bg-white rounded-md">
+    <section class="h-[500px] overflow-auto p-4">
+        <div class="relative ">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <i class="text-gray-600 fas fa-magnifying-glass mr-2"></i>
+            </div>
+            <input type="search"
+                class="block rounded w-full md:w-1/4 p-3 pl-10 text-sm bg-[#F7F7F7] focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent"
+                placeholder="Buscar por médico o fecha" (keyup)="applyFilter($event)" #input>
         </div>
-    </div>
-</div>
 
-<div *ngIf="(data$ | async ).length != 0" class="table-responsive">
-    <mat-paginator class="bg-gray-100" [length]="(data$ | async ).length" [pageSize]="pageSize" (page)="cambiarpagina($event)"
-        [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
+        <table mat-table [dataSource]="dataSource" matSort class="w-[97%] m-auto">
+            <ng-container matColumnDef="fecha">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Día</th>
+                <td mat-cell *matCellDef="let row" class="text-xs text-gray-600">
+                    <i class="fa-regular fa-calendar"></i>
+                    {{row.fecha}}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="hora">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Hora</th>
+                <td mat-cell *matCellDef="let row" class="text-xs text-gray-600">
+                    <i class="fa-regular fa-clock"></i>
+                    {{row.hora_inicio}} - {{row.hora_final}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="turno">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Turno</th>
+                <td mat-cell *matCellDef="let row" class="text-xs text-gray-600">{{row.turno}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="doctor">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor</th>
+                <td mat-cell *matCellDef="let row" class="text-xs text-gray-600">{{row.doctor}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="paciente">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Paciente</th>
+                <td mat-cell *matCellDef="let row" class="text-xs text-gray-600">{{row.paciente}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="area">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Área</th>
+                <td mat-cell *matCellDef="let row" class="text-xs text-gray-600">{{row.area}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="estado" class="">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+                <td mat-cell *matCellDef="let row" class="px-2 py-1 leading-tight rounded-sm">
+                    <span class="p-2 rounded-md text-[11px] font-semibold" [ngClass]="{
+                        'bg-[#f0fff2] text-[#3CB371]': row.estado === 'Asistida',
+                        'bg-[#fff3f2] text-[#C0392B]': row.estado === 'Cancelada',
+                        'bg-[#fffae6] text-[#B7950B]': row.estado === 'Pendiente'
+                    }">
+                        {{row.estado}}
+                    </span>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> </th>
+                <td mat-cell *matCellDef="let row" class="w-10">
+                    <div *ngIf="row.estado == 'Cancelada'"
+                        class="bg-[#fff4e6] text-gray-600 p-1 text-xs text-center rounded-lg">
+                        Sin acciones
+                    </div>
+                    <div *ngIf="(row.estado !== 'Cancelada') && ((idRolUser$ | async) === 0)"
+                        class="flex justify-end space-x-2">
+                        <button *ngIf="row.estado === 'Pendiente'" matTooltip="Editar cita"
+                            matTooltipClass="tooltip text-xs" (click)="editCite(row)"
+                            class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded-lg">
+                            <i class="fa-solid fa-edit text-xs"></i>
+                        </button>
+                        <button *ngIf="row.estado === 'Pendiente'" matTooltip="Cancelar cita"
+                            matTooltipClass="tooltip text-xs" (click)="deleteCite(row.id_cita)"
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-lg">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                        <button *ngIf="row.estado === 'Pendiente'" matTooltip="Imprimir cita"
+                            matTooltipClass="tooltip text-xs" (click)="generateComprobantPDF(row)"
+                            class="bg-[#DC0044] hover:bg-[#943530] text-white font-bold py-1 px-2 rounded-lg">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </button>
+                        <button *ngIf="row.estado === 'Asistida'" matTooltip="Ver los detalles"
+                            matTooltipClass="tooltip" (click)="showHistorial(row)"
+                            class=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-lg">
+                            <i class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                        <button *ngIf="row.estado === 'Asistida'" matTooltip="Imprimir historial"
+                            matTooltipClass="tooltip text-xs" (click)="generateHistoryPDF(row)"
+                            class="bg-[#DC0044] hover:bg-[#943530] text-white font-bold py-1 px-2 rounded-lg">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="((idRolUser$ | async) === 1) && (row.estado === 'Asistida')"
+                        class="flex justify-end space-x-2">
+                        <button matTooltip="Ver los detalles" matTooltipClass="tooltip text-xs"
+                            (click)="showHistorial(row)"
+                            class="text-x2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-lg">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button *ngIf="row.estado === 'Asistida'" matTooltip="Imprimir historial"
+                            matTooltipClass="tooltip text-xs" (click)="generateHistoryPDF(row)"
+                            class="bg-[#DC0044] hover:bg-[#943530] text-white font-bold py-1 px-2 rounded-lg">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <ng-container *ngIf="(cites$ | async ).length < 1">
+                    <td class="mat-cell text-xs text-gray-600" colspan="8">
+                        <div class="bg-white rounded-md p-2">
+                            <div class="flex h-full items-center text-sm text-blue-800 bg-blue-50 dark:bg-blue-800 dark:text-blue-300 p-2 rounded-lg"
+                                role="alert">
+                                <i class="flex-shrink-0 inline w-4 h-4 mr-3 fa-solid fa-circle-info"
+                                    aria-hidden="true"></i>
+                                Aún no hay citas registradas
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="(cites$ | async ).length > 0">
+                    <td class="mat-cell text-xs text-gray-600" colspan="8">
+                        No hay coincidencias con "{{input.value}}"
+                    </td>
+                </ng-container>
+            </tr>
+        </table>
+    </section>
+    <mat-paginator class="rounded-md" [length]="(cites$ | async ).length" [pageSize]="pageSize"
+        [ngClass]="{'hide_paginator': ((cites$ | async ).length < 1 )}" [pageSizeOptions]="[7, 10, 25, 100]">
     </mat-paginator>
-    <table class="bg-gray-100 w-full">
-        <thead>
-            <tr
-                class="text-md font-semibold tracking-wide text-left text-gray-700 text-xs  uppercase border-b border-gray-600">
-                <th (click)="ordenarPor('id_cita')" class="px-4 py-3">
-                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
-                    ID
-                </th>
-                <th (click)="ordenarPor('fecha')" class="px-4 py-3">
-                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
-                    Fecha
-                </th>
-                <th (click)="ordenarPor('estado')" class="px-4 py-3">
-                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
-                    Estado
-                </th>
-                <th (click)="ordenarPor('id_disponibilidad')" class="px-4 py-3">
-                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
-                    Turno
-                </th>
-                <th (click)="ordenarPor('doctor')" class="px-4 py-3">
-                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
-                    Doctor
-                </th>
-                <th (click)="ordenarPor('paciente')" class="px-4 py-3">
-                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
-                    Paciente
-                </th>
-                <th (click)="ordenarPor('hora')" class="px-4 py-3">
-                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
-                    Hora
-                </th>
-                <th (click)="ordenarPor('area')" class="px-4 py-3">
-                    <i class="fa-solid fa-right-left text-xs rotate-90"></i>
-                    Área
-                </th>
-
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of data$ | async | slice:desde:hasta let i=index">
-
-                <td class="px-4 py-3 border">
-                    <div class="flex items-center text-sm">
-                        <div>
-                            <p class="text-xs text-gray-900">{{item.id_cita}}</p>
-                        </div>
-                    </div>
-                </td>
-
-                <td class="px-4 py-3 border">
-                    <div class="flex items-center text-sm">
-                        <div>
-                            <p class="text-xs text-gray-900">{{item.fecha}}</p>
-                        </div>
-                    </div>
-                </td>
-                <td class="px-4 py-3 text-xs text-gray-900 border">
-                    <span class="px-2 py-1 font-semibold leading-tight rounded-sm" [ngClass]="{
-                                        'bg-green-100 text-green-800': item.estado === 'Asistida',
-                                        'bg-red-100 text-red-800': item.estado === 'Cancelada',
-                                        'bg-yellow-100 text-yellow-800': item.estado === 'Pendiente'
-                                    }">
-                        {{item.estado}}
-                    </span>
-                </td>
-                <td class="px-4 py-3 text-xs border">
-                    <span class="px-2 py-1 text-gray-900 ">
-                        {{item.id_disponibilidad}}
-                    </span>
-                </td>
-                <td class="px-4 py-3 text-xs text-gray-900 border">{{item.doctor}}</td>
-                <td class="px-4 py-3 text-xs text-gray-900 border">{{item.paciente}}</td>
-                <td class="px-4 py-3 text-xs text-gray-900 border">{{item.hora}}</td>
-                <td class="px-4 py-3 text-xs text-gray-900 border">{{item.area}}</td>
-
-                <td class="px-4 py-3 text-xs text-gray-900 border">
-                    <div *ngIf="item.estado == 'Pendiente'" class="flex justify-center">
-
-                        <button type="button"
-                            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-normal rounded-lg text-xs px-3 py-2 mr-2 mb-2">Eliminar</button>
-                        <button type="button"
-                            class="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 font-normal rounded-lg text-xs px-3 py-2 mr-2 mb-2">Editar</button>
-                    </div>
-
-                    <div *ngIf="item.estado == 'Asistida'" class="flex justify-center">
-                        <button type="button"
-                            class="focus:outline-none justify-items-center text-white bg-green-700 hover:bg-green-800 font-normal rounded-lg text-xs px-3 py-2 mr-2 mb-2">Ver
-                            historial</button>
-                    </div>
-
-                    <div *ngIf="item.estado == 'Cancelada'" class="bg-orange-100 p-2 font-bold text-xs">
-                        <span>No puede editar una</span>
-                        <br>
-                        <span>cita {{item.estado}} </span>
-                    </div>
-
-
-
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
 </div>

@@ -1,16 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './src/**/*.{html,ts, js}'
+    "./src/**/*.{html,ts}",
   ],
   theme: {
-
-    extend: {
-      gridTemplateRows: {
-        '13': 'repeat(13, minmax(0, 1fr))',
-
-      }
-    }
+    extend: {},
   },
   plugins: [],
 }

@@ -1,0 +1,30 @@
+{
+    "activitusbar.alignment": "Left",
+    "activitusbar.combineWorkspaceSettings": false,
+    "activitusbar.searchViewInPanel": false,
+    "activitusbar.views": [
+        
+        {
+            "name": "explorer",
+            "codicon": "explorer-view-icon"
+        },
+        {
+            "name": "search",
+            "codicon": "search-view-icon"
+        },
+        {
+            "name": "scm",
+            "codicon": "source-control-view-icon"
+        },
+        {
+            "name": "debug",
+            "codicon": "run-view-icon"
+        },
+        {
+            "name": "extensions",
+            "codicon": "extensions-view-icon"
+        }
+    ],
+    "thunder-client.sidebar.defaultTab": "Activity",
+    "thunder-client.sidebar.showActivityFromCollection": false
+}

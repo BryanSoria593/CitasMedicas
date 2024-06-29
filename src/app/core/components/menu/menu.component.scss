@@ -1,0 +1,42 @@
+.hover_list:hover {
+    background-color: #e7f2ff;
+    border-radius: 8px;
+
+    span {
+        color: #2D68FE;
+    }
+}
+
+.menuHide {
+    width: 80px;
+    animation: hideMenu 0.2s ease forwards;
+}
+
+.menuShow {
+    width: 160px;
+    animation: showMenu 0.2s ease forwards;
+}
+
+@keyframes hideMenu {
+    0% {
+        width: 160px;
+        transform: translateX(0);
+    }
+
+    100% {
+        width: 80px;
+        transform: translateX(0);
+    }
+}
+
+@keyframes showMenu {
+    0% {
+        width: 80px;
+        transform: translateX(0);
+    }
+
+    100% {
+        width: 160px;
+        transform: translateX(0);
+    }
+}

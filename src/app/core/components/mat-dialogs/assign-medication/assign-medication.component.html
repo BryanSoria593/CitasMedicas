@@ -1,0 +1,99 @@
+<div class="h-[500px] overflow-auto p-6">
+  <span class="text-base font-semibold mb-2 text-blue-600 ">Registro de medicamentos</span>  
+  <form [formGroup]="medicamentForm" (ngSubmit)="onSubmit()">
+    <div class="flex justify-end">
+      <button type="button" (click)="addMedicament()"
+        class="btn btn-primary flex items-center justify-center text-green-800 font-bold">
+        <span class="mr-1">Añadir medicamento</span>
+        <i class="fas fa-plus-circle"></i>
+      </button>
+    </div>
+    <div formArrayName="medicaments">
+      <div *ngFor="let medicament of medicaments().controls; let i=index" [formGroupName]="i" class="mb-4">
+        <div class="flex-row sm:flex border-b border-gray-300 p-2">
+          <div class="flex-1 mr-4">
+            <label [for]="'medicament-' + i" class="block text-gray-700">Medicamento:</label>
+            <input type="text" formControlName="medicament" [id]="'medicament-' + i"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              placeholder="Paracetamol" required>
+          </div>
+          <div class="flex-1 mr-4">
+            <label [for]="'indication-' + i" class="block text-gray-700">Indicación:</label>
+            <input type="text" formControlName="instruction" [id]="'indication-' + i"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              placeholder="Tomar cada 8 horas" required>
+          </div>
+          <div class="flex items-center m-1">
+            <button matTooltip="Eliminar indicación" matTooltipClass="tooltip text-xs" (click)="removeMedicament(i)"
+              class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-lg flex items-center justify-center">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div
+          *ngIf="medicament.get('medicament')?.touched && medicament.get('medicament').value.trim() === '' || medicament.get('instruction')?.touched && medicament.get('instruction').value.trim() === ''"
+          class="text-red-500 text-xs mt-1">
+          Las instrucciones no deben estar vacías.
+        </div>
+      </div>
+
+    </div>
+
+    <div *ngIf="medicaments().length === 0" class="text-red-500 text-xs mt-1">
+      Debe de existir al menos un medicamento.
+    </div>
+    <div *ngIf="medicaments().length === 0" class="text-red-500 text-xs mt-1">
+      Debe de existir al menos un medicamento.
+    </div>
+
+    <div class="mb-4 mt-2">
+      <label for="extraInfo" class="block mb-2 font-medium">
+        Indicaciones
+      </label>
+      <textarea formControlName="extraInfo" id="extraInfo" rows="4"
+        class="block p-2.5 w-full text-xs text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Agregar algo extra sobre la consulta"></textarea>
+    </div>
+
+    <div class="flex items-center justify-center mb-2" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+      <label for="dropzone-file"
+        class="flex flex-col items-center justify-center w-full h-20 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 ">
+        <div class="flex flex-col items-center justify-center">
+          <svg class="w-4 h-4 mt-6 text-gray-500 dark:text-gray-400" aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+          </svg>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400"><span class="font-semibold">Click para subir</span> o
+            arrastra y suelta la imágen</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG o JPEG</p>
+        </div>
+        <input (change)="onFileSelected($event)" id="dropzone-file" type="file" class="hidden"
+          accept="image/png, image/jpg, image/jpeg" />
+      </label>
+    </div>
+    
+    <div class="flex flex-wrap justify-center" mat-dialog-actions>
+      <button type="submit"
+        class="inline-flex justify-center w-full sm:w-auto md:w-auto rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none sm:mr-3 sm:text-sm
+        bg-green-600 hover:bg-green-700" [disabled]="!medicamentForm.valid">
+        Guardar
+      </button>
+
+      <button
+        class="inline-flex justify-center mt-3 w-full sm:w-auto md:w-auto rounded-md border border-gray-300 shadow-sm px-4 py-2 text-base font-medium text-gray-700 bg-gray-300 hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:text-sm"
+        color="warn" mat-raised-button mat-dialog-close>
+        Cancelar
+      </button>
+    </div>
+  </form>
+
+  <div *ngFor="let image of preImages; let i = index"
+    class="flex items-center space-x-4 border-b border-gray-300 pb-4 mb-4">
+    <img [src]="image.file" alt="Preview" class="w-16 h-16">
+    <p class="flex-grow text-gray-600">{{image.name}}</p>
+    <button (click)="removeImage(i)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-lg">
+      <i class="fa-solid fa-trash text-xs"></i>
+    </button>
+  </div>  
+</div>

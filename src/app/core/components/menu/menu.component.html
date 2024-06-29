@@ -1,19 +1,32 @@
-<div class="min-h-screen flex flex-row bg-gray-200 border-r shadow-sm">
-	<div class="flex flex-col w-56 bg-white  overflow-hidden">
-		<div class="flex items-center justify-center h-16 ">
-			<a class="flex items-center w-full p-2 m-2" routerLink="/">
-				<img class="w-8 h-8 fill-current" src="../../../../assets/img/shared/logo.png"
-					alt="Logo de la clínica soria">
-				<span class="ml-2 text-sm font-bold">Clínica Soria</span>
-			</a>
-		</div>
-		<ul *ngFor="let option of menuOptions$ | async " class="flex flex-col py-4">
-			<a [routerLink]="'/' + option.ACC_PAGINA" class="relative flex flex-row items-center pt-4 pb-4 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
-				<span class="inline-flex justify-center items-center ml-4">
-					<i class="{{option.logo}} "></i>
-				</span>
-				<span class="ml-2 text-sm ">{{option.ACC_NOMBRE}}</span>				
-			</a>
-		</ul>
-	</div>
-</div>
+<section class="dark:border-gray-800 bg-white flex-col sm:flex {{spaceWidthMenu}} {{showToggle}} sm:relative">
+    <div class="min-h-screen flex flex-row border-r shadow-md relative">
+        <nav class="flex flex-col overflow-hidden w-full ">
+            <div class="flex items-center w-full mt-4 ">
+                <a class="flex flex-col text-xs items-center my-0 mx-auto  w-2/3 h-16">
+                    <img class="h-9" src="assets/img/shared/logo.webp" alt="Logo del detector de spam">
+                    <span class="text-sm text-[#324054] font-bold {{displayWords}}">Clínica Vitalia</span>
+                </a>
+
+                <section class="absolute hidden sm:block -right-3  top-5">
+                    <div (click)="hideWordsMenu()"
+                        class="h-6 w-6 rounded-3xl bg-[#2D68FE] flex items-center justify-center cursor-pointer hover:bg-blue-900">
+                        <i class="fa-solid {{logoArrow}} text-white text-sm font-bold "></i>
+                    </div>
+                </section>
+            </div>
+            <ul *ngFor="let option of menuOptions$ | async" class="flex flex-col pl-3 pr-2 mt-4">
+                <li class="hover_list pt-4 pb-4 flex flex-row text-[13px] cursor-pointer"
+                    [routerLink]="'/' + option.ACC_PAGINA" matTooltip="{{option.ACC_NOMBRE}}" matTooltipPosition="right"
+                    matTooltipClass=" text-xs {{displayTooltip}}">
+                    <span class="flex justify-center items-center {{spaceIcons}} text-[#71839B]">
+                        <i class="{{option.logo}} {{sizeOfIcons}}"></i>
+                    </span>
+                    <span class="ml-2 text-[#324054] text-xs {{displayWords}}">{{option.ACC_NOMBRE}}</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+<section class="m-3 z-50 absolute">
+    <i class="fa-solid fa-bars sm:hidden block text-xl" (click)="showMenu()"></i>
+</section>

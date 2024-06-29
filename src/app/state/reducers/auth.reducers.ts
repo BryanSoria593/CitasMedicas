@@ -1,16 +1,15 @@
-import { createReducer, on } from "@ngrx/store";
-import { UserState } from "src/app/core/models/user/user.state";
-import { loginError, loginSuccess, logout, renewToken } from "../actions/auth.action";
-
+import { createReducer, on } from "@ngrx/store"
+import { UserState } from "src/app/core/models/user/user.state"
+import { loginError, loginSuccess, persistDataUserRequest, logoutSuccess } from "../actions/auth.action"
 
 export const initialState: UserState = {
-    loading: false,
+    loading: true,
     user: {
         id_usuario: null,
         nombres: '',
         apellidos: '',
         email: '',
-        imagen: '',
+        user_rol:null,
         token: '',
     },
     menuOptions: [
@@ -21,11 +20,9 @@ export const initialState: UserState = {
             logo: '',
         }
     ],
-   
     error: '',
-};
+}
 
-// Reducer de Login
 export const _authReducer = createReducer(
     initialState,
     on(loginSuccess, (state, { user }) => {
@@ -44,9 +41,15 @@ export const _authReducer = createReducer(
             error
         }
     }),    
-    on(logout, () => initialState)
-
-
-
-);
-
+    on(persistDataUserRequest, (state, { token }) => {
+        return {
+            ...state,
+            loading: false,
+            user: {
+                ...state.user,
+                token
+            }
+        }
+    }),
+    on(logoutSuccess, () => initialState),
+)

@@ -1,0 +1,46 @@
+<section *ngIf="!(loading$ | async)" class="dialog-container">
+  <header class="dialog-header flex justify-between items-center">
+    <span class="text-lg font-semibold text-blue-600">Historial médico</span>
+    <i class="fa-solid fa-xmark text-red-700 text-2xl cursor-pointer" mat-dialog-close></i>
+  </header>
+  <mat-dialog-content class="dialog-content p-6">
+    <section>
+      <p class="text-sm text-gray-700">
+        <span class="font-bold">Fecha de atención:</span>
+        {{ (infOfCite$ | async)?.fecha_atencion | date: 'dd/MM/yyyy hh:mm a' }}
+      </p>
+    </section>
+    <section>
+      <h3 class="text-base font-semibold text-blue-600 mt-6 mb-2">Medicamentos recetados</h3>
+      <ul class="medicament-list divide-y divide-gray-300">
+        <li *ngFor="let medicament of (medicaments$ | async)" class="py-3">
+          <div class="font-semibold text-gray-700">{{medicament.medicamento}}</div>
+          <div class="text-xs text-gray-600">{{medicament.indicacion}}</div>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 class="text-base font-semibold text-blue-600 mt-6 mb-2">Información extra</h3>
+      <p class="text-xs text-gray-700">{{ (infOfCite$ | async)?.extra_info }}</p>
+    </section>
+
+    <section *ngIf="(images$ | async).length > 0">
+      <span class="text-base font-semibold text-blue-600 mt-6 mb-2">Imágenes de la cita</span>
+      <div class="flex flex-col items-center justify-center">
+        <figure *ngFor="let image of (images$ | async)" class="m-2">
+          <img class="rounded-lg cursor-pointer w-96 h-96" [src]="image.url" alt="Receta" (click)="onImageClick($event)">
+        </figure>
+      </div>
+    </section>
+    
+    <div *ngIf="(images$ | async).length === 0" class="text-center mt-6 text-gray-600">
+      Sin imágenes para la receta
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions px-6 py-4 bg-gray-100 rounded-b-lg">
+    <button mat-flat-button mat-dialog-close color="primary">Ok</button>
+  </mat-dialog-actions>
+</section>
+

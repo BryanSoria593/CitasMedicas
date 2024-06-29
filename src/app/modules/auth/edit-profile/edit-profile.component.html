@@ -1,0 +1,128 @@
+<div class="flex">
+    <app-menu></app-menu>
+    <div class="flex-grow flex flex-col">
+        <app-header class="flex-none" title="Editar perfil"></app-header>
+        <div class="content ">
+            <div class="sm:m-3 flex flex-col">
+                <div class="bg-white rounded-lg shadow-lg p-4 mb-8">
+                    <span class="text-xl font-bold mb-4">Editar información del usuario</span>
+                    <form (submit)="updateProfile()" [formGroup]="formUpdateInfo">
+                        <div class="mb-4 mt-2">
+                            <label class="block text-gray-700 text-xs font-semibold mb-2" for="name">Nombres del
+                                Usuario</label>
+                            <input formControlName="name"
+                                class="w-full text-xs bg-white rounded-md border border-gray-300 px-3 py-1" type="text"
+                                id="name" name="name" placeholder="Ingresa tu nombre de usuario">
+                            <div *ngIf="formUpdateInfo.get('name')?.touched && formUpdateInfo.get('name')?.hasError('required')"
+                                class="text-red-500 mt-2 text-xs ml-2">
+                                Los nombres son requeridos
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-xs font-semibold mb-2" for="name">Apelidos del
+                                Usuario</label>
+                            <input formControlName="lastName"
+                                class="w-full text-xs bg-white rounded-md border border-gray-300 px-3 py-1" type="text"
+                                id="lastName" name="lastName" placeholder="Ingresa tu nombre de usuario">
+                            <div *ngIf="formUpdateInfo.get('lastName')?.touched && formUpdateInfo.get('lastName')?.hasError('required')"
+                                class="text-red-500 mt-2 text-xs ml-2">
+                                Los apellidos son requeridos
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-xs font-semibold mb-2" for="email">Correo
+                                Electrónico</label>
+                            <input formControlName="email"
+                                class="w-full text-xs bg-white rounded-md border border-gray-300 px-3 py-1" type="email"
+                                id="email" name="email" placeholder="Ingresa tu correo electrónico">
+                            <div *ngIf="formUpdateInfo.get('email')?.touched && formUpdateInfo.get('email')?.hasError('required')"
+                                class="text-red-500 mt-2 text-xs ml-2">
+                                El correo es requerido
+                            </div>
+
+                            <div *ngIf="formUpdateInfo.get('email')?.touched && formUpdateInfo.get('email')?.hasError('email')"
+                                class="text-red-500 mt-2 text-xs ml-2">
+                                El formato del correo electrónico es inválido
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-gray-700 text-xs font-semibold mb-2" for="password">Escriba su
+                                contraseña</label>
+                            <input formControlName="password"
+                                class="w-full text-xs bg-white rounded-md border border-gray-300 px-3 py-2" type="password"
+                                id="password" name="password" placeholder="Tu contraseña">
+                            <div *ngIf="formUpdateInfo.get('password')?.touched && formUpdateInfo.get('password')?.hasError('required')"
+                                class="text-red-500 mt-2 text-xs ml-2">
+                                La contraseña es requerida
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <button [disabled]="formUpdateInfo.invalid"
+                                [ngClass]="{'bg-indigo-500 hover:bg-indigo-600 focus:bg-indigo-700 ': formUpdateInfo.valid, 'bg-gray-500 cursor-not-allowed': formUpdateInfo.invalid}"
+                                class="block w-32 max-w-xs mx-aut text-white rounded-lg px-3 py-2 font-semibold">Actualizar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-4">
+                    <form (submit)="updatePassword()" [formGroup]="formUpdatePassword">
+                        <span class="text-lg font-bold mb-4">Editar Contraseña</span>
+                        <div class="mb-4 mt-2">
+                            <label class="block text-gray-700 text-xs font-semibold mb-2" for="currentPassword">Contraseña
+                                Actual
+                            </label>
+                            <input formControlName="currentPassword"
+                                class="w-full text-xs bg-white rounded-md border border-gray-300 px-3 py-2" type="password"
+                                id="currentPassword" name="currentPassword" placeholder="Ingresa tu contraseña actual">
+                            <div class="text-red-500 mt-2 text-xs ml-2"
+                                *ngIf="formUpdatePassword.get('currentPassword')?.hasError('required') && formUpdatePassword.get('currentPassword')?.touched">
+                                Este campo no puede estar vacío
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-xs font-semibold mb-2" for="newPassword">Nueva
+                                Contraseña</label>
+                            <input formControlName="newPassword"
+                                class="w-full text-xs bg-white rounded-md border border-gray-300 px-3 py-2" type="password"
+                                id="newPassword" name="newPassword" placeholder="Ingresa tu nueva contraseña">
+                            <div class="flex flex-col text-red-700">
+                                <span class="text-red-500 mt-2 text-xs ml-2"
+                                    *ngIf="formUpdatePassword.get('newPassword')?.hasError('required') && formUpdatePassword.get('newPassword')?.touched">
+                                    La nueva contraseña es requerida
+                                </span>
+                                <span class="text-red-500 mt-2 text-xs ml-2"
+                                    *ngIf="formUpdatePassword.get('newPassword')?.hasError('minlength') && formUpdatePassword.get('newPassword')?.touched">
+                                    La nueva contraseña debe tener al menos 8 caracteres
+                                </span>
+                                <span class="text-red-500 mt-2 text-xs ml-2"
+                                    *ngIf="this.formUpdatePassword.get('newPassword')?.touched && formUpdatePassword.hasError('notPattern')">
+                                    La nueva contraseña debe contener al menos una mayúscula, una minúscula, un número y
+                                    un símbolo
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-xs font-semibold mb-2" for="confirmPassword">
+                                Confirmar Contraseña
+                            </label>
+                            <input formControlName="confirmPassword"
+                                class="w-full text-xs bg-white rounded-md border border-gray-300 px-3 py-2" type="password"
+                                id="confirmPassword" name="confirmPassword" placeholder="Confirma tu nueva contraseña">
+                            <span class="text-red-500 mt-2 text-xs ml-2"
+                                *ngIf="formUpdatePassword.hasError('notSame') && formUpdatePassword.touched">
+                                Las contraseñas no coinciden
+                            </span>
+                        </div>
+                        <div class="flex">
+                            <button [disabled]="formUpdatePassword.invalid"
+                                [ngClass]="{'bg-indigo-500 hover:bg-indigo-600 focus:bg-indigo-700 ': formUpdatePassword.valid, 'bg-gray-500 cursor-not-allowed': formUpdatePassword.invalid}"
+                                class="block text-xs w-32 max-w-xs mx-aut text-white rounded-lg px-3 py-2 font-semibold">Actualizar
+                                contraseña
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

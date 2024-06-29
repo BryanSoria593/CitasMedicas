@@ -1,0 +1,50 @@
+<div mat-dialog-content
+    class="bg-white rounded-lg text-left overflow-hidden transform transition-all sm:max-w-lg sm:w-full">
+    <div>
+        <span class="text-base font-semibold mb-2 text-blue-600 ">Detalles de la cita</span>
+        <p class="text-sm">
+            <span class="text-gray-700"> Paciente:</span>
+            <span class="text-gray-500"> {{ data.cite.paciente}} </span>
+        </p>
+        <p class="text-sm">
+            <span class="text-gray-700"> Doctor: </span>
+            <span class="text-gray-500"> {{ data.cite.fecha }} </span>
+        </p>
+        <p class="text-sm">
+            <span class="text-gray-700"> Cédula: </span>
+            <span class="text-gray-500"> {{ data.cite.cedula }} </span>
+        </p>
+        <p class="text-sm">
+            <span class="text-gray-700"> Fecha: </span>
+            <span class="text-gray-500"> {{ data.cite.fecha }} </span>
+        </p>
+        <p class="text-sm">
+            <span class="text-gray-700"> Hora de inicio: </span>
+            <span class="text-gray-500"> {{ data.cite.hora_inicio }} </span>
+        </p>
+        <p class="text-sm">
+            <span class="text-gray-700"> Hora final: </span>
+            <span class="text-gray-500"> {{ data.cite.hora_final }} </span>
+        </p>
+        <p class="text-sm">
+            <span class="text-gray-700"> Estado: </span>
+            <span class="text-gray-500"> {{ data.cite.estado }} </span>
+        </p>
+        <p class="text-sm">
+            <span class="text-gray-700"> Turno: </span>
+            <span class="text-gray-500"> {{ data.cite.turno }} </span>
+        </p>
+    </div>
+    <div class="flex justify-center">
+        <button type="button"
+            class="inline-flex justify-center w-full sm:w-auto rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:mr-3 sm:text-sm"
+            (click)="assignMedicines()">
+            Asignar medicamentos
+        </button>
+        <button
+            class="inline-flex justify-center w-full sm:w-auto rounded-md border border-gray-300 shadow-sm px-4 py-2 text-base font-medium text-gray-700 bg-gray-300 hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:text-sm"
+            color="warn" mat-raised-button mat-dialog-close>
+            Cancelar
+        </button>
+    </div>
+</div>

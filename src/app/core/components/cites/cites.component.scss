@@ -1,8 +1,25 @@
-th:hover {
-    cursor: pointer;
+th {
+  color: rgb(63, 63, 63);
+  font-size: 13px;
+  font-weight: 700;
+
+  td {
+    border: 1px solid #f7f7f7;
+  }
 }
 
-div.cancelada span {
-    color: red;
-    font-weight: bold;
+::ng-deep .read-only-true .mat-form-field-appearance-outline .mat-form-field-outline .mat-form-field-outline-start {
+  border: 1px solid white !important;
+}
+
+::ng-deep .read-only-true .mat-form-field-appearance-outline .mat-form-field-outline .mat-form-field-outline-end {
+  border: 1px solid white !important;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: white;
+}
+
+.hide_paginator {
+  display: none;
 }

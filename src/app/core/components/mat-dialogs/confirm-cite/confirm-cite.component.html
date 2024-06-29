@@ -1,0 +1,23 @@
+<div class="text-left" mat-dialog-content>
+
+    <span class="text-base font-semibold mb-2 text-blue-600 ">{{ data.title }}</span>
+
+    <div class="grid grid-cols-2 text-sm mb-4">
+        <span class="font-semibold">Doctor:</span>
+        <span class="mb-2">{{ data.object.nameDoc }}</span>
+
+        <span class="font-semibold">Especialidad:</span>
+        <span class="mb-2">{{ data.object.speciality }}</span>
+
+        <span class="font-semibold">Fecha:</span>
+        <span class="mb-2">{{ data.object.date }}</span>
+
+        <span class="font-semibold">Hora:</span>
+        <span class="mb-2">{{ data.object.initialHour }} - {{ data.object.finishHour }}</span>
+    </div>
+</div>
+
+<div class="flex justify-center gap-3" mat-dialog-actions>
+    <button mat-raised-button [mat-dialog-close]="true" color="primary">Sí</button>
+    <button mat-raised-button (click)="close()" class="mr-4" color="warn">No</button>
+</div>

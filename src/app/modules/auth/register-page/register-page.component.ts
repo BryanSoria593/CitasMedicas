@@ -1,41 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { RegisterModel } from 'src/app/core/models/user/user.interface';
-import { AuthService } from '../services/auth.service';
+import { Component, OnInit } from '@angular/core'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { RegisterModel } from 'src/app/core/models/user/user.interface'
+import { AuthService } from '../services/auth.service'
 
-import { GeneralService } from 'src/app/shared/services/general.service';
-import { Router } from '@angular/router';
-
+import { GeneralService } from 'src/app/shared/services/general.service'
+import { Router } from '@angular/router'
+import { SharedService } from '../services/shared.service'
 
 @Component({
   selector: 'app-register-page',
   templateUrl: './register-page.component.html',
-  styleUrls: ['./register-page.component.scss']
 })
 export class RegisterPageComponent implements OnInit {
 
-  formRegister: FormGroup = new FormGroup({});
-  // files: "";
-  // urlImage: string = "";
-
+  formRegister: FormGroup = null
 
   constructor(
     private authService: AuthService,
     private generalService: GeneralService,
     private router: Router,
-
-  ) {
-    this.newFormGroup();
-
-  }
+    private sharedService: SharedService
+  ) {}
 
   ngOnInit(): void {
+    this.newFormGroup()
   }
 
   async sendRegister() {
+    const dialog = this.generalService.openDialogLoading()
     const credentials: RegisterModel = {
-
-
       cedula: this.formRegister.value.dni,
       email: this.formRegister.value.email,
       nombres: this.formRegister.value.names,
@@ -43,31 +36,19 @@ export class RegisterPageComponent implements OnInit {
       fecha: this.formRegister.value.date,
       ciudad: this.formRegister.value.city,
       sexo: this.formRegister.value.sex,
-      password: this.formRegister.value.password,
-      passwordConfirm: this.formRegister.value.passwordConfirm,
-
-
+      newPassword: this.formRegister.value.newPassword,
+      confirmPassword: this.formRegister.value.confirmPassword,
     }
 
-    // FIRST AWAIT THE IMAGE TO BE UPLOADED TO CLOUDINARY
-
-    // await this.generalService.uploadImageToCloudinary(this.files)
-    //   .then((url) => {
-    //     this.urlImage = url;
-    //   })
-    //   .catch((error) => {
-    //     this.generalService.openSnackBar(error, 'error');
-    //   })
-
-    // NEXT, SEND THE REGISTER DATA TO THE BACKEND
     this.authService.register(credentials).subscribe({
-      next: (response) => {
-        console.log(response);
-        this.router.navigateByUrl('/auth/login');
-        this.generalService.openSnackBar('Usuario registrado correctamente, Inicie sesión', 'success');
+      next: () => {
+        dialog.close()
+        this.router.navigateByUrl('/auth/login')
+        this.generalService.openSnackBar('Usuario registrado correctamente, Inicie sesión', 'success')
       },
-      error: (error) => {
-        this.generalService.openSnackBar(error.error.msg, 'error');
+      error: () => {
+        dialog.close()
+        this.generalService.openSnackBar('Error al registrar usuario', 'error')
       }
     })
   }
@@ -82,15 +63,14 @@ export class RegisterPageComponent implements OnInit {
         sex: new FormControl('', [Validators.required,]),
         city: new FormControl('', [Validators.required,]),
         email: new FormControl('', [Validators.required, Validators.email,]),
-        password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-        passwordConfirm: new FormControl('', [Validators.required,]),
+        newPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
+        confirmPassword: new FormControl('', [Validators.required,]),
+      },{
+        validators: [
+          this.sharedService.checkPasswords,
+          this.sharedService.checkPatternPassword
+        ]
       }
     )
-  }
-
-
-  // selectImage({ target }) {
-  //   this.files = target.files[0];
-  // }
-
+  }  
 }

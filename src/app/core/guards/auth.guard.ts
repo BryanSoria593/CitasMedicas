@@ -1,34 +1,36 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { CookieService } from 'ngx-cookie-service';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core'
+import { CanActivate, Router, UrlTree } from '@angular/router'
+import { Observable } from 'rxjs'
+import { AuthService } from 'src/app/modules/auth/services/auth.service'
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthGuard implements CanActivate {
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.verifyToken();
-  }
-
-  verifyToken(){
-    const helper = new JwtHelperService();
-    const token = this.cookieService.get('token');
-    const isExpired = helper.isTokenExpired(token);
-
-    if(!token || isExpired){
-      this.cookieService.delete('token','/')
-      this.router.navigateByUrl('/auth/login');
-      return false;
-    }
-    return true;
-  }
 
   constructor(
-    private router: Router, 
-    private cookieService: CookieService){}
+    private authService: AuthService,
+    private router: Router,
+  ) { }
+
+  async canActivate(): Promise<boolean | UrlTree> {
+    const isLogged = await this.authService.isLoggedIn()
+    this.verifyRol().subscribe((idRol: number) => {
+      if (idRol === 0) {
+        this.router.navigateByUrl('/paciente/home')
+        return false
+      } else if (idRol === 1) {
+        this.router.navigateByUrl('/doctor/dashboard')
+        return false
+      }
+      return true
+    })
+    return !isLogged
+  }
+  
+  verifyRol(): Observable<number> {
+    return this.authService.getRolUser()
+  }
   
 }

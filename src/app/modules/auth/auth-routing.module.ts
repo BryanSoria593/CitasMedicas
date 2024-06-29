@@ -1,34 +1,41 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { NotfoundComponent } from 'src/app/core/components/notfound/notfound.component';
-import { AuthLoginGuard } from 'src/app/core/guards/auth-login.guard';
-import { LoginPageComponent } from './login-page/login-page.component';
-import { RegisterPageComponent } from './register-page/register-page.component';
+import { NgModule } from '@angular/core'
+import { RouterModule, Routes } from '@angular/router'
+import { AuthGuard } from 'src/app/core/guards/auth.guard'
+import { EditProfileGuard } from 'src/app/core/guards/edit-profile.guard'
 
 const routes: Routes = [
   {
     path: 'login',
-    component: LoginPageComponent,
-    canActivate:[AuthLoginGuard]
-
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./login-page/login.module').then(m => m.LoginModule),
   },
   {
     path: 'register',
-    component: RegisterPageComponent,
-    canActivate:[AuthLoginGuard]
+    loadChildren: () => import('./register-page/register.module').then(m => m.RegisterModule),
   },
   {
-    path:'404',
-    component: NotfoundComponent,
+    path: 'edit-profile',
+    canActivate: [EditProfileGuard],
+    loadChildren: () => import('./edit-profile/edit-profile.module').then(m => m.EditProfileModule)
   },
   {
-    path:'**',
-    redirectTo:'404'
+    path: 'reset-password',
+    loadChildren: () => import('./reset-password/reset-password.module').then(m => m.ResetPasswordModule)
+  },
+  {
+    path: 'new-password/:token',
+    loadChildren: () => import('./new-password/new-password.module').then(m => m.NewPasswordModule)
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
+    pathMatch: 'full'
   }
-];
+]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
+
 export class AuthRoutingModule { }

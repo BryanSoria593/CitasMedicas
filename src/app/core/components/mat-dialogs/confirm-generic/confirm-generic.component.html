@@ -1,0 +1,13 @@
+<div class="flex flex-col items-center justify-center gap-6">
+    <i class="{{ data.logo }} {{ data.color }} text-5xl"></i>
+
+    <div class="text-center">
+        <p class="text-lg font-bold mb-4">{{ data.title }}</p>
+        <p class="text-base text-gray-700 mb-4">{{ data.description }}</p>
+    </div>
+
+    <div class="flex justify-center gap-3" mat-dialog-actions>
+        <button mat-raised-button [mat-dialog-close]="true" color="warn">Sí</button>
+        <button mat-raised-button (click)="close()" class="mr-4" color="primary">No</button>
+    </div>
+</div>

@@ -1,48 +1,52 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MenuComponent } from './components/menu/menu.component';
-import {MatMenuModule} from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { HeaderComponent } from './components/header/header.component';
-import { NotfoundComponent } from './components/notfound/notfound.component';
-import { AuthService } from '../modules/auth/services/auth.service'; 
-import { RouterModule } from '@angular/router';
-import { CitesComponent } from './components/cites/cites.component';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { OrderModule } from 'ngx-order-pipe';
+import { NgModule } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
+import { RouterModule } from '@angular/router'
+import { OrderModule } from 'ngx-order-pipe'
+
+import { MenuComponent } from './components/menu/menu.component'
+import { HeaderComponent } from './components/header/header.component'
+import { NotfoundComponent } from './components/notfound/notfound.component'
+import { CitesComponent } from './components/cites/cites.component'
+import { ConfirmCiteComponent } from './components/mat-dialogs/confirm-cite/confirm-cite.component'
+import { GenericComponent } from './components/mat-dialogs/generic/generic.component'
+import { ConfirmGenericComponent } from './components/mat-dialogs/confirm-generic/confirm-generic.component'
+import { EditCiteComponent } from './components/mat-dialogs/edit-cite/edit-cite.component'
+import { InfoHistorialComponent } from './components/mat-dialogs/info-historial/info-historial.component'
+import { MaterialModule } from './material.module'
+import { DetailsCiteComponent } from './components/mat-dialogs/details-cite/details-cite.component'
+import { AssignMedicationComponent } from './components/mat-dialogs/assign-medication/assign-medication.component'
 
 @NgModule({
   declarations: [
     MenuComponent,
     HeaderComponent,
     NotfoundComponent,
-    CitesComponent
+    CitesComponent,
+    ConfirmCiteComponent,
+    GenericComponent,
+    ConfirmGenericComponent,
+    EditCiteComponent,
+    InfoHistorialComponent,
+    DetailsCiteComponent,
+    AssignMedicationComponent,
   ],
+  entryComponents: [ConfirmCiteComponent],
   imports: [
     CommonModule,
-    MatMenuModule,
-    MatIconModule,
+    FormsModule,
+    ReactiveFormsModule,
+    OrderModule,
     RouterModule,
-    MatSelectModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    OrderModule
+    MaterialModule
   ],
-  exports:[
+  exports: [
     MenuComponent,
     HeaderComponent,
     OrderModule,
-    CitesComponent
-
-
+    CitesComponent,
   ],
-  providers: [
-    AuthService
-  ]
 })
+
 export class CoreModule { }

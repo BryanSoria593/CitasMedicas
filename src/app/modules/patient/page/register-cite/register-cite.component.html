@@ -1,0 +1,110 @@
+<div class="bg-gray-100 h-full flex text-sm">
+  <div class="flex-grow h-full flex flex-col">
+    <app-header  title="Registrar cita"></app-header>
+    <div class="content w-[97%] my-3 mx-auto">
+      <mat-stepper class="rounded-md" orientation="vertical" linear #stepper animationDuration="500">
+        <mat-step [stepControl]="formArea">
+          <ng-template matStepLabel>Seleccionar especialidad</ng-template>
+          <form [formGroup]="formArea">
+            <mat-radio-group formControlName="objectArea" aria-label="Selecciona una especialidad"
+              class="flex sm:gap-0 sm:flex-row sm:justify-around sm:flex-wrap h-auto flex-col gap-3 ">
+              <mat-radio-button *ngFor="let speciality of specialitys$ | async" [value]="speciality"
+                (click)="searchDoctorBySpeciality(speciality.id_area)">
+                <div
+                  class="rounded-lg  shadow-md flex sm:flex-col sm:w-38 sm:h-32 sm:items-center sm:mb-4 w-40 h-14 items-center gap-1">
+                  <img [src]="speciality.image" alt="Imágen de la especialidad"
+                    class=" sm:w-16 sm:h-16 sm:object-cover rounded-full sm:mb-4 w-12 h-12 ">
+                  <p class="sm:text-xs truncate ">{{speciality.nombre}}</p>
+                </div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </form>
+          <div class="mt-5">
+            <button mat-raised-button color="primary" matStepperNext [disabled]="(doctors$ | async)?.length < 1 "
+              class="text-xs">
+              Siguiente
+            </button>
+          </div>
+        </mat-step>
+
+        <mat-step [stepControl]="formDoctor">
+          <ng-template matStepLabel>Seleccionar doctor</ng-template>
+          <div *ngIf="(doctors$ | async)?.length === 0" class="bg-red-100 p-4 rounded mb-4">
+            <p class="text-red-600 font-bold">No hay doctores disponibles...</p>
+          </div>
+          <form [formGroup]="formDoctor">
+            <mat-radio-group formControlName="objectDoctor" aria-labelledby="example-radio-group-label"
+              class="flex flex-col"
+              (click)="resetDate()"
+              >
+              <mat-radio-button class="mb-4" *ngFor="let doctor of doctors$ | async" [value]="doctor">
+                <div class="flex flex-col">
+                  <p class="flex flex-col gap-1">
+                    <span class="font-bold sm:text-sm text-xs">Dr. {{doctor.nombres + ' ' + doctor.apellidos}}</span>
+                    <span class="text-gray-700 text-xs">{{doctor.nombre}}</span>
+                    <span class="text-gray-600 text-xs">{{doctor.email}}</span>
+                  </p>
+                </div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </form>
+          <div class="mt-5">
+            <button mat-button matStepperPrevious class="text-xs">Regresar</button>
+            <button mat-raised-button color="primary" matStepperNext [disabled]="!formDoctor.valid" class="text-xs">
+              Siguiente
+            </button>
+          </div>
+        </mat-step>
+
+        <mat-step [stepControl]="formDate">
+          <ng-template matStepLabel>Seleccionar fecha</ng-template>
+          <form [formGroup]="formDate">
+            <mat-form-field appearance="fill">
+              <mat-label>Selecciona una fecha</mat-label>
+              <input [matDatepickerFilter]="filterDays" (ngModelChange)="onDateChange()" formControlName="date"
+                matInput [min]="minDate" [matDatepicker]="picker" readonly>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </form>
+
+          <div class="mt-5">
+            <button mat-button matStepperPrevious class="text-xs">Regresar</button>
+            <button mat-raised-button color="primary" matStepperNext [disabled]="!formDate.valid" class="text-xs">
+              Siguiente
+            </button>
+          </div>
+        </mat-step>
+
+        <mat-step [stepControl]="formTurn">
+          <ng-template matStepLabel>Seleccionar turno</ng-template>
+          <form [formGroup]="formTurn">
+            <mat-radio-group formControlName="objectTurno" aria-label="Selecciona una especialidad"
+              class="flex flex-wrap gap-4 ">
+              <mat-radio-button *ngFor="let turn of turns$ | async" [value]="turn">
+                <div
+                  class="rounded-lg shadow-md flex sm:flex-col sm:w-24 sm:h-20 sm:mb-4 w-24 h-20 justify-center items-center gap-3">
+                  <i class="fa-regular fa-clock"></i>
+                  <p class="sm:text-xs sm:flex-row flex flex-col  justify-center items-center space-x-1">
+                    <span>{{turn.hora_inicio}}</span>
+                    <span> - </span>
+                    <span>{{turn.hora_final}}</span>
+                  </p>
+                </div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </form>
+
+          <div class="mt-5">
+            <button mat-button matStepperPrevious class="text-xs">Regresar</button>
+            <button (click)="newCiteRequest()" mat-raised-button color="primary" matStepperNext
+              [disabled]="!formTurn.valid" class="text-xs">
+              Agendar cita.
+            </button>
+          </div>
+
+        </mat-step>
+      </mat-stepper>
+    </div>
+  </div>
+</div>

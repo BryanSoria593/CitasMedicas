@@ -1,48 +1,61 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-// import { Observable, tap } from 'rxjs';
-// import { environment } from 'src/environments/environment';
+import { Injectable } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { ConfirmGenericComponent } from 'src/app/core/components/mat-dialogs/confirm-generic/confirm-generic.component'
+import { GenericComponent } from 'src/app/core/components/mat-dialogs/generic/generic.component'
+import { LoadingComponent } from 'src/app/core/components/mat-dialogs/loading/loading.component'
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class GeneralService {
 
-  durationInSeconds = 3;
   constructor(
     private _snackBar: MatSnackBar,
-    private http: HttpClient
+    private dialog: MatDialog
   ) { }
-  openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, {
-      duration: this.durationInSeconds * 1000,
-      panelClass: ['snackbar', 'snackbar-success']
 
-    });
-
+  openDialogLoading() {
+    const dialogRef = this.dialog.open(LoadingComponent, {
+      width: '350px',
+    })
+    return dialogRef
   }
 
-  // async uploadImageToCloudinary(file) {
-  //   const api = environment.apiCloudinay;
-  //   const formData = new FormData();
-  //   formData.append('file', file);
-  //   formData.append('upload_preset', 'app-citamedica');
-  //   try {
-  //     const resp = await fetch(api, {
-  //       method: 'POST',
-  //       body: formData
-  //     })
-  //     if (!resp.ok) {
-  //       this.openSnackBar('Error al subir la imagen', 'error');
-  //     }
-  //     const cloudResp = await resp.json();
-  //     return cloudResp.secure_url;    
-  //   } catch (error) {
-  //     this.openSnackBar('Error al subir la imagen', 'error');
-    
-  //   } 
-  // }
+  openSnackBar(message: string, action: string, duration: number = 3000) {
+    this._snackBar.open(message, action, {
+      duration
+    })
+  }
 
+  /* in the second argument, place a class that specifies a logo in fontawesome and 
+  the color in taildwind */
+  openDialogSuccess(title: string, logo: string, color: string, timeOut: number = 2000) {
+    const dialogRef = this.dialog.open(GenericComponent, {
+      width: '350px',
+      data: {
+        title,
+        logo,
+        color
+      },
+    })
+
+    setTimeout(() => {
+      dialogRef.close()
+    }, timeOut)
+  }
+
+  openDialogConfirm(title: string, description: string, logo: string, color: string) {
+    const dialogRef = this.dialog.open(ConfirmGenericComponent, {
+      width: '350px',
+      data: {
+        title,
+        description,
+        logo,
+        color
+      },
+    })
+    return dialogRef.afterClosed()
+  }
 }
-
-

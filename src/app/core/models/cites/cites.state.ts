@@ -1,6 +1,8 @@
-import { CitesModel } from "../cites/cites.interface";
+import { CitesModel } from "../cites/cites.interface"
 
 export interface CiteState {
-    loading: boolean;
-    cites: CitesModel[];
+    loading: boolean
+    cites: CitesModel[]
+    msg?: string
 }
+
